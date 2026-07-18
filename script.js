@@ -1,4 +1,4 @@
-// رابط الـ API المباشر والجاهز
+// رابط الـ API الخاص بـ Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
 
 async function loadData() {
@@ -9,7 +9,7 @@ async function loadData() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        // عرض قائمة الطلاب في الجدول بالترتيب المنضبط (الترتيب ثم الاسم ثم الدرجة)
+        // عرض قائمة الطلاب في الجدول بالترتيب الصحيح (الترتيب ثم الاسم ثم الدرجة)
         data.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
@@ -20,7 +20,7 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج للمراكز الثلاثة الأولى بشكل صحيح بالدرجات الحقيقية
+        // تحديث منصة التتويج للمراكز الثلاثة الأولى بالدرجات الحقيقية الصحيحة من الشيت
         if (data.length >= 1) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score + " درجة";
@@ -38,7 +38,7 @@ async function loadData() {
     }
 }
 
-// كود البحث الذكي
+// كود البحث الذكي داخل الجدول
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
     document.querySelectorAll("#tableBody tr").forEach(row => {
@@ -46,7 +46,7 @@ document.getElementById("search").addEventListener("input", function () {
     });
 });
 
-// تشغيل جلب البيانات فوراً
+// تشغيل جلب البيانات فور تحميل الصفحة
 loadData();
-// تحديث تلقائي كل 30 ثانية
+// تحديث تلقائي كل 30 ثانية لمزامنة أي تعديل في الـ Google Sheets
 setInterval(loadData, 30000);
