@@ -20,7 +20,7 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج للمراكز الثلاثة الأولى بشكل صحيح
+        // تحديث منصة التتويج للمراكز الثلاثة الأولى بشكل صحيح بالدرجات الحقيقية
         if (data.length >= 1) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score + " درجة";
@@ -31,7 +31,7 @@ async function loadData() {
         }
         if (data.length >= 3) {
             document.getElementById("thirdName").textContent = data[2].name;
-            document.getElementById("thirdScore").textContent = data[2].score + " census";
+            document.getElementById("thirdScore").textContent = data[2].score + " درجة";
         }
     } catch (error) {
         console.error("خطأ في جلب البيانات:", error);
