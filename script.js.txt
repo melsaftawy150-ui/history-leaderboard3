@@ -1,0 +1,43 @@
+const API_URL = "https://script.google.com/macros/s/AKfycbw2L9XWe4ovvu4pze9exirDet9zaqlm9W8FNt1DSiFd0hKgOcuJ2Fp12dRz3C8mPRSI/exec";
+
+async function loadData() {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+
+    data.forEach((student, index) => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${student.rank}</td>
+                <td>${student.name}</td>
+                <td>${student.score}</td>
+            </tr>
+        `;
+    });
+
+    if (data.length >= 3) {
+        document.getElementById("firstName").textContent = data[0].name;
+        document.getElementById("firstScore").textContent = data[0].score;
+
+        document.getElementById("secondName").textContent = data[1].name;
+        document.getElementById("secondScore").textContent = data[1].score;
+
+        document.getElementById("thirdName").textContent = data[2].name;
+        document.getElementById("thirdScore").textContent = data[2].score;
+    }
+}
+
+document.getElementById("search").addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll("#tableBody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value)
+            ? ""
+            : "none";
+    });
+});
+
+loadData();
+setInterval(loadData, 30000);
