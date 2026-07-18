@@ -1,6 +1,7 @@
-// ضع رابط الـ API الجديد والمستنسخ من خطوة النشر السابقة هنا بين القوسين
-const API_URL = "ضع_الرابط_الجديد_هنا";
+// رابط الـ API الجديد والمباشر بعد التعديل الأخير لضبط الأعمدة
+const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
 
+// دالة جلب بيانات الطلاب وتحديث لوحة الصدارة
 async function loadData() {
     try {
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
@@ -9,7 +10,7 @@ async function loadData() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        // عرض البيانات بشكل منضبط في أعمدتها الصحيحة داخل الجدول
+        // عرض قائمة الطلاب كاملة في الجدول بالترتيب المنضبط
         data.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
@@ -20,7 +21,7 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج (المراكز الثلاثة الأولى) بشكل صحيح
+        // تحديث منصة التتويج للمراكز الثلاثة الأولى بناءً على البيانات الصحيحة
         if (data.length >= 3) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score;
@@ -32,17 +33,23 @@ async function loadData() {
             document.getElementById("thirdScore").textContent = data[2].score;
         }
     } catch (error) {
-        console.error("خطأ في جلب البيانات:", error);
+        console.error("خطأ في جلب بيانات الطلاب من جوجل:", error);
     }
 }
 
-// كود البحث الذكي
+// كود البحث الذكي في الجدول
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
+
     document.querySelectorAll("#tableBody tr").forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+        row.style.display = row.innerText.toLowerCase().includes(value)
+            ? ""
+            : "none";
     });
 });
 
+// تشغيل الدالة فور تحميل الصفحة
 loadData();
+
+// تحديث البيانات تلقائياً كل 30 ثانية
 setInterval(loadData, 30000);
