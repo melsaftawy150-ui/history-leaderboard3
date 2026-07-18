@@ -1,4 +1,5 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
+// الرابط الصحيح والمباشر الخاص بك 100%
+const API_URL = "https://script.google.com/macros/s/AKfycbw08fnZ46M8kck6Cq07oVZc65cpxChNvAntrrla_Cm76I_5VlIpcGLRdRg3UJXAX1-j/exec";
 
 async function loadData() {
     try {
@@ -8,7 +9,7 @@ async function loadData() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        // عرض قائمة الطلاب في الجدول بالترتيب المنضبط
+        // عرض قائمة الطلاب في الجدول بالترتيب الصحيح (الترتيب ثم الاسم ثم الدرجة)
         data.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
@@ -19,7 +20,7 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج بالبيانات والدرجات الحقيقية
+        // تحديث منصة التتويج بالأسماء والدرجات الحقيقية من الشيت مباشرة
         if (data.length >= 1) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score;
@@ -37,7 +38,7 @@ async function loadData() {
     }
 }
 
-// كود البحث
+// كود البحث الذكي
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
     document.querySelectorAll("#tableBody tr").forEach(row => {
@@ -45,5 +46,7 @@ document.getElementById("search").addEventListener("input", function () {
     });
 });
 
+// تشغيل الدالة فوراً عند تحميل الصفحة
 loadData();
+// تحديث تلقائي كل 30 ثانية
 setInterval(loadData, 30000);
