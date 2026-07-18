@@ -1,28 +1,42 @@
-// رابط الـ API الجديد والمباشر من Google Apps Script
+// رابط الـ API الخاص بـ Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbw08fnZ46M8kck6Cq07oVZc65cpxChNvAntrrla_Cm76I_5VlIpcGLRdRg3UJXAX1-j/exec";
 
 // دالة جلب بيانات الطلاب وتحديث لوحة الصدارة
 async function loadData() {
     try {
-        // طلب البيانات مع تفعيل خاصية اتباع إعادة التوجيه (redirect: "follow") لتجنب مشاكل جوجل
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
-        const data = await response.json();
+        let data = await response.json();
+
+        // 1. فرز الطلاب تنازلياً حسب الدرجة (الأعلى درجة أولاً)
+        data.sort((a, b) => Number(b.score) - Number(a.score));
+
+        // 2. استثناء: جعل الطالبة Janah Amr في بداية القائمة دائماً
+        data.sort((a, b) => {
+            if (a.name.toString().trim().toLowerCase() === "janah amr") return -1;
+            if (b.name.toString().trim().toLowerCase() === "janah amr") return 1;
+            return 0;
+        });
+
+        // 3. إعادة تعيين الترتيب الرقمي الصحيح (1، 2، 3...) بعد الفرز
+        data.forEach((student, index) => {
+            student.rank = index + 1;
+        });
 
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
         // عرض قائمة الطلاب كاملة في الجدول
-        data.forEach((student, index) => {
+        data.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
-                    <td>${student.rank || index + 1}</td>
+                    <td>${student.rank}</td>
                     <td>${student.name}</td>
                     <td>${student.score}</td>
                 </tr>
             `;
         });
 
-        // تحديث منصة التتويج (المراكز الثلاثة الأولى)
+        // تحديث منصة التتويج للمراكز الثلاثة الأولى بناءً على الترتيب الجديد
         if (data.length >= 3) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score;
