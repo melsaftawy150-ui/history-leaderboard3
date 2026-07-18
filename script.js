@@ -1,5 +1,5 @@
 // الرابط الصحيح والمباشر الخاص بك 100%
-const API_URL = "https://script.google.com/macros/s/AKfycbw08fnZ46M8kck6Cq07oVZc65cpxChNvAntrrla_Cm76I_5VlIpcGLRdRg3UJXAX1-j/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
 
 async function loadData() {
     try {
