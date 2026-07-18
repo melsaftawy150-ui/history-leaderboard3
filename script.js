@@ -1,5 +1,5 @@
-// رابط الـ API الخاص بـ Google Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbw2L9XWe4ovvu4pze9exirDet9zaqlm9W8FNt1DSiFd0hKgOcuJ2Fp12dRz3C8mPRSI/exec";
+// رابط الـ API الجديد والمباشر من Google Apps Script
+const API_URL = "https://script.google.com/macros/s/AKfycbw08fnZ46M8kck6Cq07oVZc65cpxChNvAntrrla_Cm76I_5VlIpcGLRdRg3UJXAX1-j/exec";
 
 // دالة جلب بيانات الطلاب وتحديث لوحة الصدارة
 async function loadData() {
