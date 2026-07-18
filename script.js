@@ -1,34 +1,44 @@
+// رابط الـ API الخاص بـ Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbw2L9XWe4ovvu4pze9exirDet9zaqlm9W8FNt1DSiFd0hKgOcuJ2Fp12dRz3C8mPRSI/exec";
 
+// دالة جلب بيانات الطلاب وتحديث لوحة الصدارة
 async function loadData() {
-    const response = await fetch(API_URL);
-    const data = await response.json();
+    try {
+        // طلب البيانات مع تفعيل خاصية اتباع إعادة التوجيه (redirect: "follow") لتجنب مشاكل جوجل
+        const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
+        const data = await response.json();
 
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
 
-    data.forEach((student, index) => {
-        tableBody.innerHTML += `
-            <tr>
-                <td>${student.rank}</td>
-                <td>${student.name}</td>
-                <td>${student.score}</td>
-            </tr>
-        `;
-    });
+        // عرض قائمة الطلاب كاملة في الجدول
+        data.forEach((student, index) => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${student.rank || index + 1}</td>
+                    <td>${student.name}</td>
+                    <td>${student.score}</td>
+                </tr>
+            `;
+        });
 
-    if (data.length >= 3) {
-        document.getElementById("firstName").textContent = data[0].name;
-        document.getElementById("firstScore").textContent = data[0].score;
+        // تحديث منصة التتويج (المراكز الثلاثة الأولى)
+        if (data.length >= 3) {
+            document.getElementById("firstName").textContent = data[0].name;
+            document.getElementById("firstScore").textContent = data[0].score;
 
-        document.getElementById("secondName").textContent = data[1].name;
-        document.getElementById("secondScore").textContent = data[1].score;
+            document.getElementById("secondName").textContent = data[1].name;
+            document.getElementById("secondScore").textContent = data[1].score;
 
-        document.getElementById("thirdName").textContent = data[2].name;
-        document.getElementById("thirdScore").textContent = data[2].score;
+            document.getElementById("thirdName").textContent = data[2].name;
+            document.getElementById("thirdScore").textContent = data[2].score;
+        }
+    } catch (error) {
+        console.error("خطأ في جلب بيانات الطلاب من جوجل:", error);
     }
 }
 
+// كود البحث الذكي في الجدول
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
 
@@ -39,5 +49,8 @@ document.getElementById("search").addEventListener("input", function () {
     });
 });
 
+// تشغيل الدالة فور تحميل الصفحة
 loadData();
+
+// تحديث البيانات تلقائياً كل 30 ثانية
 setInterval(loadData, 30000);
