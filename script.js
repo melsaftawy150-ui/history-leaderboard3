@@ -1,31 +1,15 @@
-// رابط الـ API الخاص بـ Google Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbw08fnZ46M8kck6Cq07oVZc65cpxChNvAntrrla_Cm76I_5VlIpcGLRdRg3UJXAX1-j/exec";
+// ضع رابط الـ API الجديد والمستنسخ من خطوة النشر السابقة هنا بين القوسين
+const API_URL = "ضع_الرابط_الجديد_هنا";
 
-// دالة جلب بيانات الطلاب وتحديث لوحة الصدارة
 async function loadData() {
     try {
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
-        let data = await response.json();
-
-        // 1. فرز الطلاب تنازلياً حسب الدرجة (الأعلى درجة أولاً)
-        data.sort((a, b) => Number(b.score) - Number(a.score));
-
-        // 2. استثناء: جعل الطالبة Janah Amr في بداية القائمة دائماً
-        data.sort((a, b) => {
-            if (a.name.toString().trim().toLowerCase() === "janah amr") return -1;
-            if (b.name.toString().trim().toLowerCase() === "janah amr") return 1;
-            return 0;
-        });
-
-        // 3. إعادة تعيين الترتيب الرقمي الصحيح (1، 2، 3...) بعد الفرز
-        data.forEach((student, index) => {
-            student.rank = index + 1;
-        });
+        const data = await response.json();
 
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        // عرض قائمة الطلاب كاملة في الجدول
+        // عرض البيانات بشكل منضبط في أعمدتها الصحيحة داخل الجدول
         data.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
@@ -36,7 +20,7 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج للمراكز الثلاثة الأولى بناءً على الترتيب الجديد
+        // تحديث منصة التتويج (المراكز الثلاثة الأولى) بشكل صحيح
         if (data.length >= 3) {
             document.getElementById("firstName").textContent = data[0].name;
             document.getElementById("firstScore").textContent = data[0].score;
@@ -48,23 +32,17 @@ async function loadData() {
             document.getElementById("thirdScore").textContent = data[2].score;
         }
     } catch (error) {
-        console.error("خطأ في جلب بيانات الطلاب من جوجل:", error);
+        console.error("خطأ في جلب البيانات:", error);
     }
 }
 
-// كود البحث الذكي في الجدول
+// كود البحث الذكي
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
-
     document.querySelectorAll("#tableBody tr").forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value)
-            ? ""
-            : "none";
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
     });
 });
 
-// تشغيل الدالة فور تحميل الصفحة
 loadData();
-
-// تحديث البيانات تلقائياً كل 30 ثانية
 setInterval(loadData, 30000);
