@@ -1,16 +1,48 @@
-// الرابط الصحيح والمباشر الخاص بك 100%
 const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
 
 async function loadData() {
     try {
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
-        const data = await response.json();
+        let data = await response.json();
+
+        // تنظيف وترتيب البيانات بحيث يقرأ الاسم والدرجة بشكل ديناميكي مرن جداً
+        let formattedData = data.map((item, index) => {
+            let keys = Object.keys(item);
+            let values = Object.values(item);
+
+            // البحث عن الخانة اللي فيها أرقام لاعتبارها الدرجة، والخانة النصية لاعتبارها الاسم
+            let name = item.name || item["الاسم"] || values.find(v => typeof v === 'string' && v.length > 3) || values[0];
+            let score = item.score !== undefined ? item.score : item["الدرجة"];
+            
+            if (score === undefined) {
+                // لو مش ملاقي المسمى، هياخد أول قيمة رقمية تظهر في الصف
+                score = values.find(v => typeof v === 'number' || !isNaN(v)) || 0;
+            }
+
+            return {
+                rank: index + 1,
+                name: name,
+                score: Number(score)
+            };
+        });
+
+        // استثناء خاص: ترتيب القائمة لتبدأ دائماً بالطالبة Janah Amr بناءً على طلبك
+        formattedData.sort((a, b) => {
+            if (a.name.toString().trim().toLowerCase() === "janah amr") return -1;
+            if (b.name.toString().trim().toLowerCase() === "janah amr") return 1;
+            return b.score - a.score; // باقي الطلاب يرتبوا حسب الدرجة الأعلى
+        });
+
+        // إعادة ضبط الترتيب الرقمي (Rank) بعد الفرز
+        formattedData.forEach((student, index) => {
+            student.rank = index + 1;
+        });
 
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        // عرض قائمة الطلاب في الجدول بالترتيب الصحيح (الترتيب ثم الاسم ثم الدرجة)
-        data.forEach((student) => {
+        // حقن البيانات داخل الجدول
+        formattedData.forEach((student) => {
             tableBody.innerHTML += `
                 <tr>
                     <td>${student.rank}</td>
@@ -20,21 +52,22 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج بالأسماء والدرجات الحقيقية من الشيت مباشرة
-        if (data.length >= 1) {
-            document.getElementById("firstName").textContent = data[0].name;
-            document.getElementById("firstScore").textContent = data[0].score + " درجة";
+        // تحديث منصة التتويج بالبيانات الحقيقية المستخرجة
+        if (formattedData.length >= 1) {
+            document.getElementById("firstName").textContent = formattedData[0].name;
+            document.getElementById("firstScore").textContent = formattedData[0].score + " درجة";
         }
-        if (data.length >= 2) {
-            document.getElementById("secondName").textContent = data[1].name;
-            document.getElementById("secondScore").textContent = data[1].score + " درجة";
+        if (formattedData.length >= 2) {
+            document.getElementById("secondName").textContent = formattedData[1].name;
+            document.getElementById("secondScore").textContent = formattedData[1].score + " درجة";
         }
-        if (data.length >= 3) {
-            document.getElementById("thirdName").textContent = data[2].name;
-            document.getElementById("thirdScore").textContent = data[2].score + " درجة";
+        if (formattedData.length >= 3) {
+            document.getElementById("thirdName").textContent = formattedData[2].name;
+            document.getElementById("thirdScore").textContent = formattedData[2].score + " درجة";
         }
+
     } catch (error) {
-        console.error("خطأ في جلب البيانات:", error);
+        console.error("خطأ في معالجة البيانات:", error);
     }
 }
 
@@ -46,7 +79,6 @@ document.getElementById("search").addEventListener("input", function () {
     });
 });
 
-// تشغيل الدالة فوراً عند تحميل الصفحة
+// التشغيل الفوري والتحديث التلقائي
 loadData();
-// تحديث تلقائي كل 30 ثانية
 setInterval(loadData, 30000);
