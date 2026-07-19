@@ -1,12 +1,23 @@
-// الرابط الجديد الفعال والمحدث الخاص بك بعد الإصدار الجديد
-const API_URL = "https://script.google.com/macros/s/AKfycbzRWLV9mtei6FDvviHrNMX6hHfW0iK5Fm5p6NgCOrSo6cgdab-j0VabvAL9l77Qkgks/exec";
+// الرابط الجديد الفعال والمحدث الخاص بك
+const API_URL = "https://script.google.com/macros/s/AKfycbzDTXEyST9tAHaq0KqcJQNLNBWTH9xbiFxxaBV2MUvjyi7idPBAGmFSntrBkchlJlL9/exec";
 
 async function loadData() {
     try {
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
         let students = await response.json();
 
-        // 1. تحديث منصة الأوائل (بناءً على أول 3 صفوف في الشيت مباشرة)
+        if (!students || students.length === 0) return;
+
+        // استثناء خاص: تقديم الطالبة جنا عمرو (Janah Amr) في أول القائمة بناءً على طلبك
+        students.sort((a, b) => {
+            let nameA = a.name.toLowerCase();
+            let nameB = b.name.toLowerCase();
+            if (nameA.includes("جنا عمرو") || nameA.includes("janah amr")) return -1;
+            if (nameB.includes("جنا عمرو") || nameB.includes("janah amr")) return 1;
+            return 0;
+        });
+
+        // تحديث منصة الأوائل (الثلاثة الأوائل) بالأسماء والدرجات
         if (students.length >= 1) {
             document.getElementById("firstName").textContent = students[0].name;
             document.getElementById("firstScore").textContent = students[0].score;
@@ -20,7 +31,7 @@ async function loadData() {
             document.getElementById("thirdScore").textContent = students[2].score;
         }
 
-        // 2. بناء الجدول بنفس ترتيب الشيت تماماً بدون أي فلسفة فرز تقلب الدرجات
+        // بناء جدول درجات الطلاب بالكامل
         const tableBody = document.getElementById("tableBody");
         if (tableBody) {
             tableBody.innerHTML = "";
@@ -40,7 +51,7 @@ async function loadData() {
     }
 }
 
-// كود البحث الفوري الذكي
+// كود البحث الفوري الذكي داخل الجدول
 const searchInput = document.getElementById("search");
 if (searchInput) {
     searchInput.addEventListener("input", function () {
@@ -51,6 +62,6 @@ if (searchInput) {
     });
 }
 
-// التشغيل التلقائي الفوري والتحديث كل دقيقة
+// تشغيل فوري تلقائي وتحديث كل دقيقة لمزامنة الدرجات
 loadData();
 setInterval(loadData, 60000);
