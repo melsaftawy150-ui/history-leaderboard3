@@ -1,15 +1,22 @@
-// الرابط الجديد الفعال الخاص بك جاهز ومدمج
-const API_URL = "https://script.google.com/macros/s/AKfycbwqh-aTbITMjJ9pNgjXniIaTmR9gKexcIH0PJSbx0UeWtgjJy50uED_pvZm4OlaYHwE/exec";
+// الرابط الجديد الفعال والمحدث الخاص بك
+const API_URL = "https://script.google.com/macros/s/AKfycbxGMvWnD_3vlG9HjaBrVdRWAKx6PeX5jWyltoqn0yjtvqAla3Zal9xrxqFeAtyUqesl/exec";
 
 async function loadData() {
     try {
         const response = await fetch(API_URL, { method: "GET", redirect: "follow" });
         let students = await response.json();
 
-        // 1. فرز وترتيب الطلاب حسب الدرجة الأعلى
+        // 1. فرز وترتيب الطلاب حسب الدرجة الأعلى أولاً
         students.sort((a, b) => b.score - a.score);
 
-        // 2. تحديث لوحة الأوائل المميزة بالأسماء والدرجات
+        // 2. استثناء خاص: ترتيب القائمة لتبدأ دائماً بالطالبة Janah Amr بناءً على طلبك
+        students.sort((a, b) => {
+            if (a.name.toString().trim().toLowerCase() === "janah amr") return -1;
+            if (b.name.toString().trim().toLowerCase() === "janah amr") return 1;
+            return 0; 
+        });
+
+        // 3. تحديث منصة الأوائل المميزة بالأسماء والدرجات المظبوطة
         if (students.length >= 1) {
             document.getElementById("firstName").textContent = students[0].name;
             document.getElementById("firstScore").textContent = students[0].score + " / 30";
@@ -23,7 +30,7 @@ async function loadData() {
             document.getElementById("thirdScore").textContent = students[2].score + " / 30";
         }
 
-        // 3. بناء الجدول بالكامل
+        // 4. بناء الجدول بالكامل
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
