@@ -1,5 +1,5 @@
-// حط هنا رابط الـ Web App الجديد الخاص بك بعد النشر
-const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
+// الرابط الجديد الفعال الخاص بك جاهز ومدمج
+const API_URL = "https://script.google.com/macros/s/AKfycbwqh-aTbITMjJ9pNgjXniIaTmR9gKexcIH0PJSbx0UeWtgjJy50uED_pvZm4OlaYHwE/exec";
 
 async function loadData() {
     try {
