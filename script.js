@@ -1,4 +1,3 @@
-// الرابط الصحيح والنهائي الخاص بك
 const API_URL = "https://script.google.com/macros/s/AKfycbyTGWbMNgZ5BslCRV-viQ89fen9Gj6AKKF4a9lqcV_MuIN9QrEO-TlSC0BqEHK6uprz/exec";
 
 async function loadData() {
@@ -10,21 +9,20 @@ async function loadData() {
         if (!tableBody) return;
         tableBody.innerHTML = "";
 
-        // تحويل البيانات بشكل آمن بناءً على ترتيب الأعمدة (العمود 1: الاسم، العمود 2: الدرجة)
-        let formattedStudents = data.map((item) => {
-            let values = Object.values(item); 
-            // values[0] هو الاسم، values[1] أو values[2] هي الدرجة حسب ترتيب الشيت
+        // استخراج البيانات بناءً على ترتيب القيم الداخلي منعاً لاختلاف المسميات
+        let students = data.map((item) => {
+            let values = Object.values(item);
             let name = values[0] || "بدون اسم";
-            let score = values[1] !== undefined && !isNaN(values[1]) ? Number(values[1]) : (Number(values[2]) || 0);
-            
-            return { name: name.toString().trim(), score: score };
+            // البحث عن أول قيمة رقمية صالحة لاعتبارها الدرجة
+            let score = values.find((v, idx) => idx > 0 && !isNaN(v) && v !== "") || 0;
+            return { name: name.toString().trim(), score: Number(score) };
         });
 
-        // 1. ترتيب بقية الطلاب من الأعلى للأقل في الدرجات
-        formattedStudents.sort((a, b) => b.score - a.score);
+        // ترتيب الطلاب تنازلياً حسب الدرجة الأعلى
+        students.sort((a, b) => b.score - a.score);
 
-        // 2. استثناء: جعل الطالبة Janah Amr في بداية القائمة دائماً بناءً على طلبك
-        formattedStudents.sort((a, b) => {
+        // استثناء: تقديم الطالبة Janah Amr بناءً على التعديل السابق
+        students.sort((a, b) => {
             let nameA = a.name.toLowerCase();
             let nameB = b.name.toLowerCase();
             if (nameA === "janah amr" || nameA.includes("جنا عمرو")) return -1;
@@ -32,8 +30,8 @@ async function loadData() {
             return 0;
         });
 
-        // عرض البيانات في الجدول وضبط الرقم التسلسلي (الترتيب)
-        formattedStudents.forEach((student, index) => {
+        // حقن الصفوف داخل الجدول
+        students.forEach((student, index) => {
             let rank = index + 1;
             tableBody.innerHTML += `
                 <tr>
@@ -44,26 +42,26 @@ async function loadData() {
             `;
         });
 
-        // تحديث منصة التتويج الثلاثية بالدرجات الحقيقية
-        if (formattedStudents.length >= 1) {
-            if(document.getElementById("firstName")) document.getElementById("firstName").textContent = formattedStudents[0].name;
-            if(document.getElementById("firstScore")) document.getElementById("firstScore").textContent = formattedStudents[0].score + " درجة";
+        // تحديث كروت المنصة بالدرجات الحقيقية
+        if (students.length >= 1) {
+            if(document.getElementById("firstName")) document.getElementById("firstName").textContent = students[0].name;
+            if(document.getElementById("firstScore")) document.getElementById("firstScore").textContent = students[0].score + " درجة";
         }
-        if (formattedStudents.length >= 2) {
-            if(document.getElementById("secondName")) document.getElementById("secondName").textContent = formattedStudents[1].name;
-            if(document.getElementById("secondScore")) document.getElementById("secondScore").textContent = formattedStudents[1].score + " درجة";
+        if (students.length >= 2) {
+            if(document.getElementById("secondName")) document.getElementById("secondName").textContent = students[1].name;
+            if(document.getElementById("secondScore")) document.getElementById("secondScore").textContent = students[1].score + " درجة";
         }
-        if (formattedStudents.length >= 3) {
-            if(document.getElementById("thirdName")) document.getElementById("thirdName").textContent = formattedStudents[2].name;
-            if(document.getElementById("thirdScore")) document.getElementById("thirdScore").textContent = formattedStudents[2].score + " درجة";
+        if (students.length >= 3) {
+            if(document.getElementById("thirdName")) document.getElementById("thirdName").textContent = students[2].name;
+            if(document.getElementById("thirdScore")) document.getElementById("thirdScore").textContent = students[2].score + " درجة";
         }
 
     } catch (error) {
-        console.error("خطأ في جلب أو معالجة البيانات:", error);
+        console.error("خطأ في معالجة البيانات:", error);
     }
 }
 
-// كود البحث الذكي
+// كود البحث
 const searchInput = document.getElementById("search");
 if (searchInput) {
     searchInput.addEventListener("input", function () {
@@ -74,6 +72,5 @@ if (searchInput) {
     });
 }
 
-// تشغيل الدالة فوراً والتحديث التلقائي
 loadData();
 setInterval(loadData, 30000);
