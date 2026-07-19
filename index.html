@@ -4,44 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة شرف التاريخ</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --container-bg: #1c2541;
+            --primary-gold: #ffd700;
+            --text-color: #ffffff;
+            --row-even: #222e50;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #1c2541, #3a506b);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid var(--primary-gold);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .slogan {
+            font-style: italic;
+            color: #5bc0be;
+            margin-top: 5px;
+            font-size: 1.1rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        /* منصة الأوائل الأفقية المميزة */
+        .podium {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            gap: 15px;
+        }
+        .podium-card {
+            background: var(--container-bg);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 2px solid transparent;
+            transition: transform 0.3s;
+        }
+        .podium-card:hover { transform: translateY(-5px); }
+        .podium-card.first { border-color: #ffd700; order: 2; transform: translateY(-15px); }
+        .podium-card.first:hover { transform: translateY(-20px); }
+        .podium-card.second { border-color: #c0c0c0; order: 1; }
+        .podium-card.third { border-color: #cd7f32; order: 3; }
+        .podium-card h3 { margin: 0 0 10px 0; font-size: 1.4rem; }
+        .podium-card .name { font-weight: bold; font-size: 1.2rem; margin-bottom: 8px; color: #fff; }
+        .podium-card .score { color: var(--primary-gold); font-weight: bold; font-size: 1.1rem; }
+        
+        .search-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid #3a506b;
+            background-color: var(--container-bg);
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+        }
+        .search-box input:focus { border-color: var(--primary-gold); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--container-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        th, td { padding: 15px; text-align: center; }
+        th { background-color: #3a506b; color: var(--primary-gold); font-size: 1.2rem; }
+        tr:nth-child(even) { background-color: var(--row-even); }
+        tr:hover { background-color: #2a3c56; }
+        .rank-badge {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            background-color: #3a506b;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .podium { flex-direction: column; align-items: stretch; }
+            .podium-card.first { order: 1; transform: none; }
+            .podium-card.first:hover { transform: translateY(-5px); }
+            .podium-card.second { order: 2; }
+            .podium-card.third { order: 3; }
+        }
+    </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>🏆 لوحة شرف التاريخ 🏆</h1>
-        <p>مستر محمد عبد الفتاح</p>
+        <h1>🏆 منصة صاحب السعادة / مستر محمد عبد الفتاح 🏆</h1>
+        <p>اجمد مدرس تاريخ كدا كدا 😎</p>
     </div>
 
     <div class="container">
-        <!-- منصة التتويج الأصلية بناءً على كود الـ CSS القديم الخاص بك -->
+        <!-- منصة الثلاثة الأوائل -->
         <div class="podium">
-            <!-- المركز الثاني -->
             <div class="podium-card second">
-                <h3>🥈 الثاني</h3>
-                <div id="secondName" class="name">...</div>
-                <div id="secondScore" class="score">...</div>
+                <h3>🥈 المركز الثاني</h3>
+                <div id="secondName" class="name">جاري التحميل...</div>
+                <div id="secondScore" class="score">-</div>
             </div>
-            <!-- المركز الأول -->
             <div class="podium-card first">
-                <h3>🥇 الأول</h3>
-                <div id="firstName" class="name">...</div>
-                <div id="firstScore" class="score">...</div>
+                <h3>🥇 المركز الأول</h3>
+                <div id="firstName" class="name">جاري التحميل...</div>
+                <div id="firstScore" class="score">-</div>
             </div>
-            <!-- المركز الثالث -->
             <div class="podium-card third">
-                <h3>🥉 الثالث</h3>
-                <div id="thirdName" class="name">...</div>
-                <div id="thirdScore" class="score">...</div>
+                <h3>🥉 المركز الثالث</h3>
+                <div id="thirdName" class="name">جاري التحميل...</div>
+                <div id="thirdScore" class="score">-</div>
             </div>
         </div>
 
-        <!-- خانة البحث -->
         <div class="search-box">
-            <input type="text" id="search" placeholder="🔍 ابحث باسم الطالب...">
+            <input type="text" id="search" placeholder="🔍 ابحث عن اسمك لمعرفة درجتك...">
         </div>
 
-        <!-- الجدول -->
         <table>
             <thead>
                 <tr>
@@ -51,7 +164,7 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- البيانات تظهر هنا تلقائياً -->
+                <!-- البيانات هتنزل هنا -->
             </tbody>
         </table>
     </div>
