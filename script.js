@@ -1,4 +1,3 @@
-// الرابط الجديد الفعال والمحدث الخاص بك
 const API_URL = "https://script.google.com/macros/s/AKfycbxo1s0Z2mdimJe9B9eA0OWTNRKQTtwEZDfaKoIjQMZEEbBTSsS5w8lFXhEnux35qNMI/exec";
 
 async function loadData() {
@@ -8,14 +7,31 @@ async function loadData() {
 
         if (!students || students.length === 0) return;
 
-        // 1. ترتيب الطلاب بناءً على استخراج الرقم الأول من نص الدرجة (مثل 30 من 30 / 30) لضمان الترتيب التنازلي الصحيح
+        // تعديل ذكي: إذا تبدلت الخانات من السيرفر، يتم تصحيحها هنا فوراً
+        students = students.map(student => {
+            let actualName = student.name;
+            let actualScore = student.score;
+
+            // لو خانة الاسم تحتوي على أرقام أو علامة / وخانة الدرجة هي النص، نقوم بعكسهم
+            if (student.name.includes('/') || !isNaN(student.name.trim())) {
+                actualName = student.score;
+                actualScore = student.name;
+            }
+
+            return {
+                name: actualName.toString().trim(),
+                score: actualScore.toString().trim()
+            };
+        });
+
+        // 1. ترتيب تنازلي حقيقي بناءً على الرقم الأول في الدرجة
         students.sort((a, b) => {
             let scoreA = parseInt(a.score.split('/')[0]) || 0;
             let scoreB = parseInt(b.score.split('/')[0]) || 0;
             return scoreB - scoreA;
         });
 
-        // 2. استثناء خاص: تقديم الطالبة جنا عمرو (Janah Amr) في أول القائمة دائماً بناءً على طلبك
+        // 2. تثبيت الطالبة جنا عمرو (Janah Amr) في المقدمة دائماً
         students.sort((a, b) => {
             let nameA = a.name.toLowerCase();
             let nameB = b.name.toLowerCase();
@@ -24,7 +40,7 @@ async function loadData() {
             return 0;
         });
 
-        // 3. تحديث منصة الأوائل (الثلاثة الأوائل) بالأسماء والدرجات الصحيحة في مكانها
+        // 3. تحديث كروت المراكز الأولى الثلاثة
         if (students.length >= 1) {
             document.getElementById("firstName").textContent = students[0].name;
             document.getElementById("firstScore").textContent = students[0].score;
@@ -38,7 +54,7 @@ async function loadData() {
             document.getElementById("thirdScore").textContent = students[2].score;
         }
 
-        // 4. بناء جدول درجات الطلاب بالكامل بشكل صحيح
+        // 4. بناء الجدول بالشكل الصحيح
         const tableBody = document.getElementById("tableBody");
         if (tableBody) {
             tableBody.innerHTML = "";
@@ -58,7 +74,7 @@ async function loadData() {
     }
 }
 
-// كود البحث الفوري الذكي داخل الجدول
+// كود البحث الفوري
 const searchInput = document.getElementById("search");
 if (searchInput) {
     searchInput.addEventListener("input", function () {
@@ -69,6 +85,5 @@ if (searchInput) {
     });
 }
 
-// تشغيل فوري تلقائي وتحديث كل دقيقة لمزامنة الدرجات
 loadData();
 setInterval(loadData, 60000);
